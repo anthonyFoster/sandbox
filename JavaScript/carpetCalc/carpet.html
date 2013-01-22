@@ -1,0 +1,82 @@
+<!-- AJ Allen -->
+<!-- Assignment 1 -->
+<!-- January 19, 2013 -->
+<!-- View with IE9 for correct formatting -->
+<html>
+  <head>
+    <title>SCC Carpets are Us</title>
+
+    <link rel="stylesheet" type="text/css" href="carpet.css" />
+
+    <script type="text/javascript">
+      function runCalc() {
+        var width;
+        var height;
+        var cost;
+		var tax = .075;
+		var total;
+		var subtotal;
+		var sqft;
+		//input
+		width = parseInt(document.getElementById("width").value);
+		height = parseInt(document.getElementById("height").value);
+		cost = parseInt(document.getElementById("cost").value);
+		//figure square footage
+		sqft = width * height;
+		//figure subtotal
+		subtotal = sqft * cost
+		//figure tax
+		tax = tax * subtotal
+		//figure total
+		total = subtotal + tax;
+		//output
+		document.getElementById("tax").value = tax;
+		document.getElementById("total").value = total;
+      }
+    </script>
+  </head>
+
+  <body>
+  
+    <div id="wrapper">
+	  <div id = "header">
+        <div class="heading">SCC Carpets are Us</div>
+        <div class="subheading">We got you covered!</div>
+    </div>
+	<div class="left">
+	<div class="img">
+	  <img src="rolls.png" alt="carpet rolls" width="235" height="197"/>
+	</div>  
+	</div> 
+	<div id="content">  
+	  <table>
+	    <tr>
+		  <td>Room width:</td>
+		  <td><input type="text" id="width" name="width" value=""/><br /></td>
+		</tr>
+		<tr>
+          <td>Room Depth:</td>
+		  <td><input type="text" id="height" name="height" value=""/><br /></td>
+		</tr>
+		<tr>
+	      <td>Carpet cost per foot:</td>
+		  <td><input type="text" id="cost" name="cost" value="" /><br /></td>
+		</tr>
+		<tr>
+		  <td>Tax:</td>
+		  <td><input type="text" id="tax" name="tax" value="" style="background: DFEFF0;"/><br /></td>
+		</tr>
+		<tr>
+		  <td>Total:</td>
+		  <td><input type="text" id="total" name="total" value="" style="background: DFEFF0;"/><br /></td>
+		</tr>
+		<tr>
+		<td> </td>
+		<td><input type = button id="button" value="Calculate Order" onclick="runCalc();"/><br /></td>
+		</tr>
+	  </table>
+    </div>
+	</div>	
+ 
+  </body>
+</html>

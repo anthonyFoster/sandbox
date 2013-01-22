@@ -1,0 +1,51 @@
+/*AJ Allen
+*CSS style sheet for carpet.html
+*January 19, 2013
+*View with IE9 for correct formatting
+*/
+body {
+  font:14px arial;
+  text-align:left;
+  padding: 5px;
+}
+
+#wrapper {
+  margin-top:15px;
+  width:1000px;
+}
+
+div.heading {
+  font:32px arial;
+  font-weight:bold;
+  margin-bottom:20px;
+  text-align: center;
+}
+  
+div.subheading {
+  font:20px arial;
+  margin-bottom:20px;
+  text-align: center;
+  font-style: italic;
+}
+
+#content {
+  padding: 10px;
+  margin: 50px;
+  height: 500px;
+  width: 500px;
+  text-align: right;
+}
+
+div.left{
+  float: left;
+}
+
+div.img{
+  padding: 10;
+  margin: 50px;
+}  
+
+td
+{
+text-align: right;
+}
