@@ -25,10 +25,18 @@ public final class R {
     }
     public static final class string {
         public static final int app_name=0x7f040000;
+<<<<<<< HEAD
         public static final int menu_settings=0x7f040004;
         public static final int title_section1=0x7f040003;
         public static final int title_section2=0x7f040002;
         public static final int title_section3=0x7f040001;
+=======
+        public static final int hello_world=0x7f040004;
+        public static final int menu_settings=0x7f040005;
+        public static final int title_schedule=0x7f040003;
+        public static final int title_standings=0x7f040002;
+        public static final int title_tickets=0x7f040001;
+>>>>>>> de791c94c726f25160b49679aaad3480c3351737
     }
     public static final class style {
         /** 
