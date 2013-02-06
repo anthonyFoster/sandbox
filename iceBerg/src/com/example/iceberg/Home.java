@@ -60,10 +60,27 @@ public class Home extends FragmentActivity implements ActionBar.TabListener {
 	public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
 		// When the given tab is selected, show the tab contents in the
 		// container view.
-		Fragment fragment = new DummySectionFragment();
-		Bundle args = new Bundle();
-		args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, tab.getPosition() + 1);
-		fragment.setArguments(args);
+		final ActionBar actionBar = getActionBar();
+		Fragment fragment;
+		
+		switch(tab.getPosition()){
+			case 0:  actionBar.setTitle(R.string.title_schedule);
+					 fragment = new Schedule();
+					 break;
+			case 1:  actionBar.setTitle(R.string.title_news);
+					 fragment = new News();
+					 break;
+			case 2:  actionBar.setTitle(R.string.title_twitter);
+					 fragment = new Twitter();
+					 break;
+			default: actionBar.setTitle(R.string.title_schedule);
+					 fragment = new Schedule();
+					 break;
+		}
+		
+		//Bundle args = new Bundle();
+		//args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, tab.getPosition() + 1);
+		//fragment.setArguments(args);
 		getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
 	}
 
@@ -74,30 +91,4 @@ public class Home extends FragmentActivity implements ActionBar.TabListener {
 	@Override
 	public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
 	}
-
-	/**
-	 * A dummy fragment representing a section of the app, but that simply
-	 * displays dummy text.
-	 */
-	public static class DummySectionFragment extends Fragment {
-		/**
-		 * The fragment argument representing the section number for this
-		 * fragment.
-		 */
-		public static final String ARG_SECTION_NUMBER = "section_number";
-
-		public DummySectionFragment() {
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-			// Create a new TextView and set its text to the fragment's section
-			// number argument value.
-			TextView textView = new TextView(getActivity());
-			textView.setGravity(Gravity.CENTER);
-			textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
-			return textView;
-		}
-	}
-
 }
