@@ -10,8 +10,6 @@ import android.widget.TextView;
 
 public class Schedule extends Fragment {
 
-	public static final String ARG_SECTION_NUMBER = "section_number";
-
 	public Schedule() {
 	}
 
