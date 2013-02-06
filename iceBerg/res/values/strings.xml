@@ -2,18 +2,11 @@
 <resources>
 
     <string name="app_name">iceBerg</string>
-<<<<<<< HEAD
-    <string name="title_section3">News Feed</string>
-    <string name="title_section2">Twitter Feed</string>
-    <string name="title_section1">Schedule</string>
+    <string name="title_news">News Feed</string>
+    <string name="title_twitter">Twitter Feed</string>
+    <string name="title_schedule">Schedule</string>
     <string name="menu_settings">Settings</string> 
 
 </resources>
-=======
-    <string name="title_tickets">Tickets</string>
-    <string name="title_standings">Standings</string>
-    <string name="title_schedule">Schedule</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="menu_settings">Settings</string>
->>>>>>> de791c94c726f25160b49679aaad3480c3351737
+
 
