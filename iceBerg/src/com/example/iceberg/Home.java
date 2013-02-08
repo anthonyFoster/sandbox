@@ -28,6 +28,7 @@ public class Home extends FragmentActivity implements ActionBar.TabListener {
 		actionBar.addTab(actionBar.newTab().setText(R.string.title_schedule).setTabListener(this));
 		actionBar.addTab(actionBar.newTab().setText(R.string.title_news).setTabListener(this));
 		actionBar.addTab(actionBar.newTab().setText(R.string.title_twitter).setTabListener(this));
+		
 	}
 
 	@Override
@@ -55,28 +56,27 @@ public class Home extends FragmentActivity implements ActionBar.TabListener {
 	public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
 		// When the given tab is selected, show the tab contents in the
 		// container view.
-		final ActionBar actionBar = getActionBar();
-		Fragment fragment;
+		ActionBar actionBar = getActionBar();
+		Bundle args = new Bundle();
+		Fragment frag;
 		
 		switch(tab.getPosition()){
 			case 0:  actionBar.setTitle(R.string.title_schedule);
-					 fragment = new Schedule();
+					 frag = new Schedule();
 					 break;
 			case 1:  actionBar.setTitle(R.string.title_news);
-					 fragment = new News();
+					 frag = new News();
 					 break;
 			case 2:  actionBar.setTitle(R.string.title_twitter);
-					 fragment = new Twitter();
+					 frag = new Twitter();
 					 break;
 			default: actionBar.setTitle(R.string.title_schedule);
-					 fragment = new Schedule();
+					 frag = new Schedule();
 					 break;
 		}
 		
-		//Bundle args = new Bundle();
-		//args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, tab.getPosition() + 1);
-		//fragment.setArguments(args);
-		getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+		frag.setArguments(args);
+		getSupportFragmentManager().beginTransaction().replace(R.id.container, frag).commit();
 	}
 
 	@Override
