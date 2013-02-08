@@ -1,9 +1,9 @@
 package com.example.iceberg;
 
 import android.app.ActionBar;
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 
@@ -76,7 +76,7 @@ public class Home extends FragmentActivity implements ActionBar.TabListener {
 		}
 		
 		frag.setArguments(args);
-		getSupportFragmentManager().beginTransaction().replace(R.id.container, frag).commit();
+		fragmentTransaction.replace(R.id.container, frag);
 	}
 
 	@Override
