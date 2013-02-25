@@ -28,16 +28,16 @@ public class Schedule extends ListFragment {
  
     // Array of integers points to images stored in /res/drawable-ldpi/
     int[] logos = new int[]{
-        R.drawable.ic_launcher,
-        R.drawable.ic_launcher,
-        R.drawable.ic_launcher,
-        R.drawable.ic_launcher,
-        R.drawable.ic_launcher,
-        R.drawable.ic_launcher,
-        R.drawable.ic_launcher,
-        R.drawable.ic_launcher,
-        R.drawable.ic_launcher,
-        R.drawable.ic_launcher
+        R.drawable.lincoln,
+        R.drawable.omaha,
+        R.drawable.tricity,
+        R.drawable.desmoines,
+        R.drawable.chicago,
+        R.drawable.youngstown,
+        R.drawable.cedar_rapids,
+        R.drawable.fargo,
+        R.drawable.waterloo,
+        R.drawable.usa
     };
  
     // Array of strings to store currencies

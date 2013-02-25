@@ -18,10 +18,36 @@ import android.view.ViewGroup;
 import android.widget.SimpleAdapter;
 
 public class Twitter extends ListFragment {
+<<<<<<< Updated upstream
 //stores player twitter handles	
     String[] twitterHandle = new String[15];
 //stores actual tweets
     String[] tweets = new String[15];
+=======
+//stores player twitter handles
+	
+    String[] twitterHandle = new String[] {
+            "Luke Johnson",
+            "testing 140 characters",
+            "Justin Woods",
+            "testing 140 characters",
+            "Dominik Shine",
+            "testing 140 characters",
+            "Mike Mckee",
+            "testing 140 characters"
+    };
+//stores actual tweets
+    String[] tweets = new String[]{
+            "had a huge fight last night #go stars",
+            "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "first goal ever! #starsFlyTogether",
+            "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",           
+            "goalie fight #winning",
+            "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "crowd was insane last night #stars",
+            "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        };
+>>>>>>> Stashed changes
     	
 	public Twitter() {
 	}
