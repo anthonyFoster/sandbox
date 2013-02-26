@@ -11,8 +11,10 @@ import org.json.JSONObject;
 
 import android.app.ListFragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SimpleAdapter;
@@ -30,6 +32,13 @@ public class Twitter extends ListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+		setHasOptionsMenu(true);
+		View view =  inflater.inflate(R.layout.twitter_list_fragment, container, false);
+		getTweets();
+        return view;
+	}
+	
+	private void getTweets(){
 		//Call twitter api to get tweets
 		//For some reason having rpp=12 means we get 15 results.
 		String result = null;
@@ -51,6 +60,9 @@ public class Twitter extends ListFragment {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		result = null;
+		
 		//Log.i("af",""+jArray.length());
 		twitterHandle[0] = "#LincolnStars";
 		tweets[0] = "Use the LincolnStars hash tag to join the conversation!";
@@ -66,7 +78,6 @@ public class Twitter extends ListFragment {
 			}	    
 		}
 		
-		
 		// Each row in the list stores twitter handle and tweet
         List<HashMap<String,String>> dataList = new ArrayList<HashMap<String,String>>();
  
@@ -77,17 +88,34 @@ public class Twitter extends ListFragment {
             dataList.add(dataMap);
         }
         
-		// Inflate the layout for this fragment  
-        View view =  inflater.inflate(R.layout.twitter_list_fragment, container, false);   
-        
         // Keys used in Hashmap
         String[] from = {"twitterHandle","tweets" };
- 
+        
+        // Inflate the layout for this fragment  
+        //LayoutInflater inflater = getActivity().getLayoutInflater();
+        //ViewGroup container = getView().getParent();
+         
+        
         // Ids of views in listview_layout
         int[] to = {R.id.twitterHandle,R.id.tweets};
         SimpleAdapter adapter = new SimpleAdapter(getActivity(), dataList, R.layout.twitter_listview_layout, from, to);
-        setListAdapter(adapter);  
-
-        return view;
+        setListAdapter(adapter);
+	}
+	
+	public void onPrepareOptionsMenu(Menu menu) {
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.twitter_refresh, menu);
+    }
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	        case R.id.twitterRefresh:
+	            getTweets();
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
 }
