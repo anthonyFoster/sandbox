@@ -20,9 +20,9 @@ import android.widget.SimpleAdapter;
 public class Twitter extends ListFragment {
 	
 	//stores player twitter handles	
-    String[] twitterHandle = new String[15];
+    String[] twitterHandle = new String[11];
     //stores actual tweets
-    String[] tweets = new String[15];
+    String[] tweets = new String[11];
     	
 	public Twitter() {
 	}
@@ -34,7 +34,7 @@ public class Twitter extends ListFragment {
 		//For some reason having rpp=12 means we get 15 results.
 		String result = null;
 		try {
-			result = new TwitGet().execute("http://search.twitter.com/search.json?q=celticstalk&rpp=12&include_entities=true&with_twitter_user_id=true&result_type=mixed").get();
+			result = new TwitGet().execute("http://search.twitter.com/search.json?q=lincolnstars&rpp=10&result_type=mixed").get();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -42,7 +42,7 @@ public class Twitter extends ListFragment {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Log.i("af",result);
+		//Log.i("afl",result);
 		JSONArray jArray = null;
 		try {
 			JSONObject jObject = new JSONObject(result);
@@ -51,13 +51,15 @@ public class Twitter extends ListFragment {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Log.i("af",""+jArray.length());
-		for(int i=0; i < jArray.length(); i++){
+		//Log.i("af",""+jArray.length());
+		twitterHandle[0] = "#LincolnStars";
+		tweets[0] = "Use the LincolnStars hash tag to join the conversation!";
+		for(int i=0; i < 11; i++){
 			JSONObject oneObject;
 			try {
 				oneObject = jArray.getJSONObject(i);
-				twitterHandle[i] = oneObject.getString("from_user");
-				tweets[i] = oneObject.getString("text");
+				twitterHandle[i+1] = oneObject.getString("from_user");
+				tweets[i+1] = oneObject.getString("text");
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
