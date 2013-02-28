@@ -1,25 +1,92 @@
 package com.example.iceberg;
 
-import android.app.Fragment;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.xmlpull.v1.XmlSerializer;
+
+import android.app.ListFragment;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.Xml;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
-public class News extends Fragment {
+public class News extends ListFragment {
 
+	private List<Blog> blogs;
+	
 	public News() {
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		// Create a new TextView and set its text to the fragment's section
-		// number argument value.
-		TextView textView = new TextView(getActivity());
-		textView.setGravity(Gravity.CENTER);
-		textView.setText("This is text in the news tab.");
-		return textView;
+		
+		View view =  inflater.inflate(R.layout.news_list_fragment, container, false);
+		loadFeed();
+		return view;
 	}
+
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+		Intent viewMessage = new Intent(Intent.ACTION_VIEW, Uri.parse(blogs.get(position).getLink().toExternalForm()));
+		this.startActivity(viewMessage);
+	}
+
+	private void loadFeed(){
+    	try{
+	    	FeedParser parser = new RssFeedParser("http://www.lincolnstarsblog.com/feeds/posts/default?alt=rss");
+	    	blogs = new FeedGet().execute(parser).get();
+	    	String xml = writeXml();
+	    	Log.i("Blog",xml);
+	    	List<String> titles = new ArrayList<String>(blogs.size());
+	    	for (Blog blg : blogs){
+	    		titles.add(blg.getTitle() + "  " + blg.getDate());
+	    	}
+	    	ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.news_listview_layout, titles);
+	    	setListAdapter(adapter);
+    	} catch (Throwable t){
+    		Log.e("AndroidNews",t.getMessage(),t);
+    	}
+    }
+    
+	private String writeXml(){
+		XmlSerializer serializer = Xml.newSerializer();
+		StringWriter writer = new StringWriter();
+		try {
+			serializer.setOutput(writer);
+			serializer.startDocument("UTF-8", true);
+			serializer.startTag("", "messages");
+			serializer.attribute("", "number", String.valueOf(blogs.size()));
+			for (Blog blg: blogs){
+				serializer.startTag("", "message");
+				serializer.attribute("", "date", blg.getDate());
+				serializer.startTag("", "title");
+				serializer.text(blg.getTitle());
+				serializer.endTag("", "title");
+				serializer.startTag("", "url");
+				serializer.text(blg.getLink().toExternalForm());
+				serializer.endTag("", "url");
+				serializer.startTag("", "body");
+				serializer.text(blg.getDescription());
+				serializer.endTag("", "body");
+				serializer.endTag("", "message");
+			}
+			serializer.endTag("", "messages");
+			serializer.endDocument();
+			return writer.toString();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} 
+	}
+	
 }
