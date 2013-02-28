@@ -14,44 +14,44 @@ import android.widget.SimpleAdapter;
 public class Schedule extends ListFragment {
 	// Array of strings storing country names
     String[] homeAwayResult = new String[] {
-        "L 4 - 5",
-        "W 3 - 2",
-        "W 6 - 1",
         "HOME",
         "HOME",
         "AWAY",
         "AWAY",
         "AWAY",
+        "HOME",
+        "HOME",
         "AWAY",
-        "HOME"
+        "AWAY",
+        "W 8 - 5"
     };
  
     // Array of integers points to images stored in /res/drawable-ldpi/
     int[] logos = new int[]{
-        R.drawable.lincoln,
-        R.drawable.omaha,
-        R.drawable.tricity,
-        R.drawable.desmoines,
-        R.drawable.chicago,
-        R.drawable.youngstown,
-        R.drawable.cedar_rapids,
-        R.drawable.fargo,
+        R.drawable.sioux_falls,
+        R.drawable.green_bay,
         R.drawable.waterloo,
-        R.drawable.usa
+        R.drawable.fargo,
+        R.drawable.fargo,
+        R.drawable.muskegon,
+        R.drawable.sioux_city,
+        R.drawable.fargo,
+        R.drawable.fargo,
+        R.drawable.sioux_city
     };
  
     // Array of strings to store currencies
     String[] dateTime = new String[]{
-        "FRI, 2/8 10:00PM",
-        "SAT, 2/9 7:00PM",
-        "SUN, 2/10 7:00PM",
-        "MON, 2/11 7:00PM",
-        "FRI, 2/12 10:00PM",
-        "FRI, 2/13 7:00PM",
-        "FRI, 2/8 7:00PM",
-        "FRI, 2/8 7:00PM",
-        "FRI, 2/8 7:00PM",
-        "FRI, 2/8 7:00PM"
+        "FRI, 3/22 7:05PM",
+        "SAT, 3/16 7:05PM",
+        "FRI, 3/15 7:05PM",
+        "TUE, 3/12 7:05PM",
+        "SAT, 3/09 7:05PM",
+        "FRI, 3/08 7:05PM",
+        "TUE, 3/05 7:05PM",
+        "SAT, 3/02 7:05PM",
+        "FRI, 3/01 7:35PM",
+        "TUE, 2/26 7:05PM"
     };
 	
 	public Schedule() {
