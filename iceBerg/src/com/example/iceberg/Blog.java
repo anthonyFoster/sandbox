@@ -9,7 +9,7 @@ import java.util.Date;
 import android.util.Log;
 
 public class Blog implements Comparable<Blog>{
-		static SimpleDateFormat FORMATTER = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm");
+		static SimpleDateFormat FORMATTER = new SimpleDateFormat("EEE, dd MMM yyyy");
 		private String title;
 		private URL link;
 		private String description;

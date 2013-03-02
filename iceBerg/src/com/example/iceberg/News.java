@@ -2,6 +2,7 @@ package com.example.iceberg;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.xmlpull.v1.XmlSerializer;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 public class News extends ListFragment {
@@ -43,17 +45,30 @@ public class News extends ListFragment {
 	}
 
 	private void loadFeed(){
+		List<HashMap<String,String>> dataList = new ArrayList<HashMap<String,String>>();
     	try{
 	    	FeedParser parser = new RssFeedParser("http://www.lincolnstarsblog.com/feeds/posts/default?alt=rss");
 	    	blogs = new FeedGet().execute(parser).get();
 	    	String xml = writeXml();
 	    	Log.i("Blog",xml);
-	    	List<String> titles = new ArrayList<String>(blogs.size());
+	    	//List<String> titles = new ArrayList<String>(blogs.size());
 	    	for (Blog blg : blogs){
-	    		titles.add(blg.getTitle() + "  " + blg.getDate());
+	    		HashMap<String, String> dataMap = new HashMap<String,String>();
+	            dataMap.put("title", blg.getTitle());
+	            dataMap.put("date", blg.getDate());
+	            //dataMap.put("style", "");
+	            dataList.add(dataMap);
+	    		//titles.add(blg.getTitle() + "  " + blg.getDate());
 	    	}
-	    	ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.news_listview_layout, titles);
-	    	setListAdapter(adapter);
+	    	//String[] from = { "style", "title","date" };
+	    	//int[] to = { R.id.styleBar, R.id.title,R.id.date };
+	    	String[] from = { "title","date" };
+	    	int[] to = { R.id.title,R.id.date };
+	         
+	    	SimpleAdapter adapter = new SimpleAdapter(getActivity(), dataList, R.layout.news_listview_layout, from, to);
+	        setListAdapter(adapter);
+	    	//ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.news_listview_layout, titles);
+	    	//setListAdapter(adapter);
     	} catch (Throwable t){
     		Log.e("AndroidNews",t.getMessage(),t);
     	}
