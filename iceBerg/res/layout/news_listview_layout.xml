@@ -6,13 +6,6 @@
          android:background="@drawable/customshape">
 
 		<TextView xmlns:android="http://schemas.android.com/apk/res/android" 
-			android:id="@+id/styleBar" 
-			android:layout_width="match_parent" 
-			android:layout_height="10dp"
-			android:background="@color/blue"
-		/>
-
-		<TextView xmlns:android="http://schemas.android.com/apk/res/android" 
 			android:id="@+id/title" 
 			android:layout_width="wrap_content" 
 			android:layout_height="55dp"
@@ -20,7 +13,7 @@
 			android:paddingRight="10dp"
 		    android:paddingLeft="10dp"
 		    android:paddingBottom="5dp"
-		    android:textColor="#FFFFFF"
+		    android:textColor="#33B5E5"
 		    android:textStyle="bold"
 		    android:textSize="18sp"		    
 		/>
@@ -30,7 +23,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content" 
 		    android:paddingLeft="10dp"    
-		    android:textColor="#FFFFFF"
+		    android:textColor="#33B5E5"
 		    android:textSize="12sp"		    
 		/>
 
