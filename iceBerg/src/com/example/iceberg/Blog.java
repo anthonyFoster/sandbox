@@ -6,8 +6,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import android.util.Log;
-
 public class Blog implements Comparable<Blog>{
 		static SimpleDateFormat FORMATTER = new SimpleDateFormat("EEE, dd MMM yyyy");
 		private String title;
@@ -44,7 +42,7 @@ public class Blog implements Comparable<Blog>{
 		}
 
 		public String getDate() {
-			Log.i("AndroidNews","date = " + this.date);
+			//Log.i("AndroidNews","date = " + this.date);
 			return FORMATTER.format(this.date);
 		}
 

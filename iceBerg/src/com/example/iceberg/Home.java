@@ -19,6 +19,9 @@ public class Home extends FragmentActivity implements ActionBar.TabListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
+		
+		DatabaseHandler db = new DatabaseHandler(this);
+        db.close();
 
 		// Set up the action bar to show tabs.
 		final ActionBar actionBar = getActionBar();

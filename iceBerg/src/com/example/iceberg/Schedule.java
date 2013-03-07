@@ -1,6 +1,9 @@
 package com.example.iceberg;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -12,47 +15,9 @@ import android.view.ViewGroup;
 import android.widget.SimpleAdapter;
 
 public class Schedule extends ListFragment {
-	// Array of strings storing country names
-    String[] homeAwayResult = new String[] {
-        "HOME",
-        "HOME",
-        "AWAY",
-        "AWAY",
-        "AWAY",
-        "HOME",
-        "HOME",
-        "AWAY",
-        "AWAY",
-        "W 8 - 5"
-    };
- 
-    // Array of integers points to images stored in /res/drawable-ldpi/
-    int[] logos = new int[]{
-        R.drawable.sioux_falls,
-        R.drawable.green_bay,
-        R.drawable.waterloo,
-        R.drawable.fargo,
-        R.drawable.fargo,
-        R.drawable.muskegon,
-        R.drawable.sioux_city,
-        R.drawable.fargo,
-        R.drawable.fargo,
-        R.drawable.sioux_city
-    };
- 
-    // Array of strings to store currencies
-    String[] dateTime = new String[]{
-        "FRI, 3/22 7:05PM",
-        "SAT, 3/16 7:05PM",
-        "FRI, 3/15 7:05PM",
-        "TUE, 3/12 7:05PM",
-        "SAT, 3/09 7:05PM",
-        "FRI, 3/08 7:05PM",
-        "TUE, 3/05 7:05PM",
-        "SAT, 3/02 7:05PM",
-        "FRI, 3/01 7:35PM",
-        "TUE, 2/26 7:05PM"
-    };
+	
+	SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MM/dd hh:mm");
 	
 	public Schedule() {
 	}
@@ -62,12 +27,27 @@ public class Schedule extends ListFragment {
 		
 		// Each row in the list stores country name, currency and flag
         List<HashMap<String,String>> dataList = new ArrayList<HashMap<String,String>>();
+        DatabaseHandler db = new DatabaseHandler(getActivity());
+        List<Game> schedule = db.getAllGames();
+        db.close();
  
-        for(int i=0;i<10;i++){
+        for(Game gm : schedule){
             HashMap<String, String> dataMap = new HashMap<String,String>();
-            dataMap.put("home_away_result", homeAwayResult[i]);
-            dataMap.put("date_time", dateTime[i]);
-            dataMap.put("logo", Integer.toString(logos[i]) );
+            Date date = null;
+            if(gm.getResult() == null){
+            	dataMap.put("home_away_result", gm.getHomeAway());
+            }
+            else{
+            	dataMap.put("home_away_result", gm.getResult());
+            }
+            try {
+            	date = FORMATTER.parse(gm.getDate());
+				dataMap.put("date_time", dateFormat.format(date));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            dataMap.put("logo", gm.getOpponentImage());
             dataList.add(dataMap);
         }
         

@@ -43,7 +43,7 @@ public class Twitter extends ListFragment {
 		//For some reason having rpp=12 means we get 15 results.
 		String result = null;
 		try {
-			result = new TwitGet().execute("http://search.twitter.com/search.json?q=lincolnstars&rpp=10&result_type=mixed").get();
+			result = new TwitGet().execute("http://search.twitter.com/search.json?q=lincolnstars&rpp=12&result_type=mixed").get();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -66,12 +66,12 @@ public class Twitter extends ListFragment {
 		//Log.i("af",""+jArray.length());
 		twitterHandle[0] = "#LincolnStars";
 		tweets[0] = "Use the LincolnStars hash tag to join the conversation!";
-		for(int i=0; i < 11; i++){
+		for(int i=1; i < tweets.length; i++){
 			JSONObject oneObject;
 			try {
 				oneObject = jArray.getJSONObject(i);
-				twitterHandle[i+1] = oneObject.getString("from_user");
-				tweets[i+1] = oneObject.getString("text");
+				twitterHandle[i] = oneObject.getString("from_user");
+				tweets[i] = oneObject.getString("text");
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

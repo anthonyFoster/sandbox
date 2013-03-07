@@ -7,7 +7,6 @@ import android.sax.Element;
 import android.sax.EndElementListener;
 import android.sax.EndTextElementListener;
 import android.sax.RootElement;
-import android.util.Log;
 import android.util.Xml;
 
 public class RssFeedParser extends BaseFeedParser {
@@ -31,7 +30,7 @@ public class RssFeedParser extends BaseFeedParser {
 		});
 		item.getChild(TITLE).setEndTextElementListener(new EndTextElementListener(){
 			public void end(String body) {
-				Log.i("AndroidNews", "title = " + body);
+				//Log.i("AndroidNews", "title = " + body);
 				currentMessage.setTitle(body);
 			}
 		});
@@ -42,13 +41,13 @@ public class RssFeedParser extends BaseFeedParser {
 		});
 		item.getChild(DESCRIPTION).setEndTextElementListener(new EndTextElementListener(){
 			public void end(String body) {
-				Log.i("AndroidNews", "Description = " + android.text.Html.fromHtml(body).toString());
+				//Log.i("AndroidNews", "Description = " + android.text.Html.fromHtml(body).toString());
 				currentMessage.setDescription(body);
 			}
 		});
 		item.getChild(PUB_DATE).setEndTextElementListener(new EndTextElementListener(){
 			public void end(String body) {
-				Log.i("AndroidNews", "date 1 = " + body);
+				//Log.i("AndroidNews", "date 1 = " + body);
 				currentMessage.setDate(body);
 			}
 		});

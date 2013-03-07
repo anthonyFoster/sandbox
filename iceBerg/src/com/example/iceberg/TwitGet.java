@@ -15,7 +15,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 public class TwitGet extends AsyncTask<String,Void,String>{
 	
@@ -48,7 +47,7 @@ public class TwitGet extends AsyncTask<String,Void,String>{
 		} catch (ClientProtocolException e) {
 	
 		} catch (IOException e){
-		  Log.e("aferror", "ERROR: Failed to open GET_REQUEST "+ e);
+		  //Log.e("aferror", "ERROR: Failed to open GET_REQUEST "+ e);
 		}
 		return null;
 	}

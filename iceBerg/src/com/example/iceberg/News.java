@@ -11,7 +11,6 @@ import android.app.ListFragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,7 +46,7 @@ public class News extends ListFragment {
 	    	FeedParser parser = new RssFeedParser("http://www.lincolnstarsblog.com/feeds/posts/default?alt=rss");
 	    	blogs = new FeedGet().execute(parser).get();
 	    	String xml = writeXml();
-	    	Log.i("Blog",xml);
+	    	//Log.i("Blog",xml);
 	    	for (Blog blg : blogs){
 	    		HashMap<String, String> dataMap = new HashMap<String,String>();
 	            dataMap.put("title", blg.getTitle());
@@ -62,7 +61,7 @@ public class News extends ListFragment {
 	        setListAdapter(adapter);
 
     	} catch (Throwable t){
-    		Log.e("AndroidNews",t.getMessage(),t);
+    		//Log.e("AndroidNews",t.getMessage(),t);
     	}
     }
     
