@@ -1,7 +1,9 @@
 package com.example.iceberg;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -9,6 +11,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 	 
@@ -122,6 +125,45 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // return game list
         return gameList;
     }
+    
+    // Get All Games without a result prior to todays date
+    public List<Game> getGamesWithoutResult(){
+    	SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy-MM-dd");
+    	Date date = new Date();
+    	List<Game> gameList = new ArrayList<Game>();
+    	String selectQuery = "SELECT * FROM " + TABLE_SCHEDULE + " WHERE " + KEY_RESULT + " IS NULL";
+    	
+    	SQLiteDatabase db = this.getWritableDatabase();
+    	Cursor cursor = db.rawQuery(selectQuery, null);
+    	
+    	// looping through all rows and adding to list
+    	if (cursor.moveToFirst()){
+    		do{
+    			try {
+					if(dateFmt.parse(cursor.getString(1)).before(dateFmt.parse(dateFmt.format(date)))){
+						Game game = new Game();
+						game.setID(Integer.parseInt(cursor.getString(0)));
+					    game.setDate(cursor.getString(1));
+					    game.setOpponent(cursor.getString(2));
+						game.setHomeAway(cursor.getString(3));
+						game.setResult(cursor.getString(4));
+						game.setOpponentImage(cursor.getString(5));
+					    // Adding game to list
+						gameList.add(game);
+					}
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            } while (cursor.moveToNext());
+    	}
+    	db.close();
+    	//return game list
+    	return gameList;
+    }
  
     // Updating single game
     public int updateGame(Game game) {
@@ -133,9 +175,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		values.put(KEY_HOME_AWAY, game.getHomeAway()); // home away
         values.put(KEY_RESULT, game.getResult()); // result
 		values.put(KEY_OPPONENT_IMAGE, game.getOpponentImage()); // opponent image
+		int rtn = db.update(TABLE_SCHEDULE, values, KEY_ID + " = ?", new String[] { String.valueOf(game.getID()) });
 		db.close();
         // updating row
-        return db.update(TABLE_SCHEDULE, values, KEY_ID + " = ?", new String[] { String.valueOf(game.getID()) });
+        return rtn;
 		
     }
  

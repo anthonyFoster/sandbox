@@ -62,7 +62,7 @@ public class Schedule extends ListFragment {
         SimpleAdapter adapter = new SimpleAdapter(getActivity(), dataList, R.layout.schedule_listview_layout, from, to);
         setListAdapter(adapter);
         //new ArrayAdapter(getActivity(),android.R.layout.simple_list_item_2,mListItems));  
-
+        new UpdateScores(getActivity()).execute("http://www.lincolnstars.com/leagues/print_schedule.cfm?leagueID=16793&clientID=4806&teamID=343151&mixed=1");
         return view;
 	}
 }

@@ -1,10 +1,13 @@
 package com.example.iceberg;
 
+import java.io.File;
+
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 
 public class Home extends FragmentActivity implements ActionBar.TabListener {
@@ -20,8 +23,17 @@ public class Home extends FragmentActivity implements ActionBar.TabListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
 		
-		DatabaseHandler db = new DatabaseHandler(this);
-        db.close();
+		File database = getApplicationContext().getDatabasePath("iceberg.db");
+
+		if (!database.exists()) {
+		    // Database does not exist so copy it from assets here
+		    Log.i("af", "Not Found");
+		    DatabaseHandler db = new DatabaseHandler(this);
+	        db.close();
+		} else {
+		    Log.i("af", "Found");
+		    
+		}
 
 		// Set up the action bar to show tabs.
 		final ActionBar actionBar = getActionBar();
