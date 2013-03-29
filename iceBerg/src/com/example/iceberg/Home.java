@@ -23,7 +23,12 @@ public class Home extends FragmentActivity implements ActionBar.TabListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
 		
-		File database = getApplicationContext().getDatabasePath("iceberg.db");
+		DatabaseHandler db = new DatabaseHandler(this);
+        db.close();
+		/* I was trying to make it detect if the database file exists so we could possibly
+		  do stuff here if needed. but this wasn't working.
+		File database = getApplicationContext().getDatabasePath("iceberg");
+		 
 
 		if (!database.exists()) {
 		    // Database does not exist so copy it from assets here
@@ -32,8 +37,8 @@ public class Home extends FragmentActivity implements ActionBar.TabListener {
 	        db.close();
 		} else {
 		    Log.i("af", "Found");
-		    
 		}
+		*/
 
 		// Set up the action bar to show tabs.
 		final ActionBar actionBar = getActionBar();
