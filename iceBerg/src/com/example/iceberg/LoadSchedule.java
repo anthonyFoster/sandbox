@@ -15,14 +15,20 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
-public class LoadSchedule extends AsyncTask<String,Void,String>{
+public class LoadSchedule extends AsyncTask<String,Integer,String>{
 
 	DatabaseHandler db = null;
 	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	HashMap<String, String> imageMap = new HashMap<String, String>();
+	Context context;
+	private ProgressDialog dialog;
+    //private Schedule schedule;
+
 	
 	public enum Month {
 		Jan,
@@ -40,7 +46,9 @@ public class LoadSchedule extends AsyncTask<String,Void,String>{
 	}
 	
 	public LoadSchedule(Context context){
+		this.context = context;
 		db = new DatabaseHandler(context);
+		dialog = new ProgressDialog(context);
 		imageMap.put("fargo", Integer.toString(R.drawable.fargo));
 		imageMap.put("cedar", Integer.toString(R.drawable.cedar_rapids));
 		imageMap.put("chicago", Integer.toString(R.drawable.chicago));
@@ -56,6 +64,12 @@ public class LoadSchedule extends AsyncTask<String,Void,String>{
 		imageMap.put("usntdp", Integer.toString(R.drawable.usa));
 		imageMap.put("waterloo", Integer.toString(R.drawable.waterloo));
 		imageMap.put("youngstown", Integer.toString(R.drawable.youngstown));
+	}
+	
+	protected void onPreExecute(){
+		//Toast.makeText(context,"Loading the schedule for the first time may take a minute.", Toast.LENGTH_SHORT).show();
+		this.dialog.setMessage("Initial load of the schedule may take a few seconds");
+        this.dialog.show();
 	}
 	
 	protected String doInBackground(String... urls) {
@@ -204,6 +218,8 @@ public class LoadSchedule extends AsyncTask<String,Void,String>{
 	}
 	
 	protected void OnPostExecute(String result){
-		
+		if (dialog.isShowing()) {
+            dialog.dismiss();
+        }
 	}
 }

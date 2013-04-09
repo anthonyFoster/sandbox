@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 public class News extends ListFragment {
 
@@ -44,7 +45,7 @@ public class News extends ListFragment {
 		List<HashMap<String,String>> dataList = new ArrayList<HashMap<String,String>>();
     	try{
 	    	FeedParser parser = new RssFeedParser("http://www.lincolnstarsblog.com/feeds/posts/default?alt=rss");
-	    	blogs = new FeedGet().execute(parser).get();
+	    	blogs = new FeedGet(getActivity()).execute(parser).get();
 	    	String xml = writeXml();
 	    	//Log.i("Blog",xml);
 	    	for (Blog blg : blogs){
