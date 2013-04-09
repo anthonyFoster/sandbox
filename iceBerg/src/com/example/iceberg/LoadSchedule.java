@@ -5,8 +5,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,9 +17,13 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import android.app.ListFragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.view.View;
+import android.widget.BaseAdapter;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 public class LoadSchedule extends AsyncTask<String,Integer,String>{
@@ -221,5 +227,6 @@ public class LoadSchedule extends AsyncTask<String,Integer,String>{
 		if (dialog.isShowing()) {
             dialog.dismiss();
         }
+	
 	}
 }

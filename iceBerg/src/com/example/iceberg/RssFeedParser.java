@@ -39,12 +39,14 @@ public class RssFeedParser extends BaseFeedParser {
 				currentMessage.setLink(body);
 			}
 		});
+		/*
 		item.getChild(DESCRIPTION).setEndTextElementListener(new EndTextElementListener(){
 			public void end(String body) {
 				//Log.i("AndroidNews", "Description = " + android.text.Html.fromHtml(body).toString());
 				currentMessage.setDescription(body);
 			}
 		});
+		*/
 		item.getChild(PUB_DATE).setEndTextElementListener(new EndTextElementListener(){
 			public void end(String body) {
 				//Log.i("AndroidNews", "date 1 = " + body);

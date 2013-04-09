@@ -8,6 +8,7 @@ import java.util.List;
 import org.xmlpull.v1.XmlSerializer;
 
 import android.app.ListFragment;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,13 +23,16 @@ import android.widget.Toast;
 public class News extends ListFragment {
 
 	private List<Blog> blogs;
+	private FeedGet feed;
 	
 	public News() {
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		
+		FeedParser parser = new RssFeedParser("http://www.lincolnstarsblog.com/feeds/posts/default?alt=rss");
+		feed = new FeedGet(getActivity());
+		feed.execute(parser);
 		View view =  inflater.inflate(R.layout.news_list_fragment, container, false);
 		loadFeed();
 		return view;
@@ -44,9 +48,9 @@ public class News extends ListFragment {
 	private void loadFeed(){
 		List<HashMap<String,String>> dataList = new ArrayList<HashMap<String,String>>();
     	try{
-	    	FeedParser parser = new RssFeedParser("http://www.lincolnstarsblog.com/feeds/posts/default?alt=rss");
-	    	blogs = new FeedGet(getActivity()).execute(parser).get();
-	    	String xml = writeXml();
+	    	//FeedParser parser = new RssFeedParser("http://www.lincolnstarsblog.com/feeds/posts/default?alt=rss");
+	    	blogs = feed.get();
+	    	//String xml = writeXml();
 	    	//Log.i("Blog",xml);
 	    	for (Blog blg : blogs){
 	    		HashMap<String, String> dataMap = new HashMap<String,String>();

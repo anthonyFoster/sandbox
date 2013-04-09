@@ -10,17 +10,17 @@ import android.widget.Toast;
 public class FeedGet extends AsyncTask<FeedParser,Void,List<Blog>>{
 	
 	Context context;
-	private ProgressDialog dialog;
+	//private ProgressDialog dialog;
 	
 	public FeedGet(Context context){
 		this.context = context;
-		dialog = new ProgressDialog(context);
+		//dialog = new ProgressDialog(context);
 	}
 	
-	protected void onPreExecute(){
+	/*protected void onPreExecute(){
 		this.dialog.setMessage("Loading News");
         this.dialog.show();
-	}
+	}*/
 	
 	@Override
 	protected List<Blog> doInBackground(FeedParser... parser) {
@@ -28,9 +28,9 @@ public class FeedGet extends AsyncTask<FeedParser,Void,List<Blog>>{
 	}
 
 	protected void OnPostExecute(List<Blog> blogs){
-		if (dialog.isShowing()) {
-            dialog.dismiss();
-        }
+		//if (dialog.isShowing()) {
+          //  dialog.dismiss();
+        //}
 	}
 	
 }

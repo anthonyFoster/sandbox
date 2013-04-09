@@ -49,7 +49,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_OPPONENT + " TEXT," + KEY_HOME_AWAY + " TEXT," + KEY_RESULT + " TEXT," + KEY_OPPONENT_IMAGE + " TEXT" + ")";
         db.execSQL(CREATE_SCHEDULE_TABLE);
         
-		new LoadSchedule(context).execute("http://www.lincolnstars.com/leagues/print_schedule.cfm?leagueID=16793&clientID=4806&teamID=343151&mixed=1");
+		//new LoadSchedule(context).execute("http://www.lincolnstars.com/leagues/print_schedule.cfm?leagueID=16793&clientID=4806&teamID=343151&mixed=1");
     }
  
     // Upgrading database
