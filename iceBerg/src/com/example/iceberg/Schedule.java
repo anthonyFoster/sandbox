@@ -36,21 +36,30 @@ public class Schedule extends ListFragment {
 	static SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MM/dd hh:mm");
 	
-	static SimpleAdapter adapter;
+	static List<HashMap<String,String>> dataList = new ArrayList<HashMap<String,String>>();
+	
+    static SimpleAdapter adapter;
 	
 	public Schedule() {
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		
+		// Keys used in Hashmap
+	    String[] from = { "logo","home_away_result","date_time" };
+	    // Ids of views in listview_layout
+	    int[] to = { R.id.logo,R.id.home_away_result,R.id.date_time };
+	    
+	    adapter = new SimpleAdapter(getActivity(), dataList, R.layout.schedule_listview_layout, from, to);
+	    setListAdapter(adapter);
+	    
 		// Inflate the layout for this fragment  
         View view =  inflater.inflate(R.layout.schedule_list_fragment, container, false); 
 		File dbFile = new File("/data/data/com.example.iceberg/databases/iceBerg");
 	    
 		if(dbFile.exists()){
 			//Log.i("af","database exists");
-			List<HashMap<String,String>> dataList = new ArrayList<HashMap<String,String>>();
+			//List<HashMap<String,String>> dataList = new ArrayList<HashMap<String,String>>();
 	        DatabaseHandler db = new DatabaseHandler(getActivity());
 	        List<Game> schedule = db.getAllGames();
 	        db.close();
@@ -73,16 +82,8 @@ public class Schedule extends ListFragment {
 				}
 	            dataMap.put("logo", gm.getOpponentImage());
 	            dataList.add(dataMap);
-	        }  
-	        
-	        // Keys used in Hashmap
-	        String[] from = { "logo","home_away_result","date_time" };
-	 
-	        // Ids of views in listview_layout
-	        int[] to = { R.id.logo,R.id.home_away_result,R.id.date_time };
-	        adapter = new SimpleAdapter(getActivity(), dataList, R.layout.schedule_listview_layout, from, to);
-	        setListAdapter(adapter);
-
+	        }
+	        adapter.notifyDataSetChanged();
 	        new UpdateScores(getActivity()).execute("http://www.lincolnstars.com/leagues/print_schedule.cfm?leagueID=16793&clientID=4806&teamID=343151&mixed=1");
 		}
 		else{
@@ -267,6 +268,7 @@ public class Schedule extends ListFragment {
 								opponent = null;
 								j = 0;
 								capture = false;
+								//Log.i("af","going");
 							default:
 								break;
 						}
@@ -283,7 +285,7 @@ public class Schedule extends ListFragment {
 					db.addGame(gm);
 				}
 
-				return null;
+				return "done";
 				
 			}
 			catch(Exception e){
@@ -295,9 +297,10 @@ public class Schedule extends ListFragment {
 		protected void onPostExecute(String result){
 			if (dialog.isShowing()) {
 	            dialog.dismiss();
+	            //Log.i("af","done1");
 	        }
-			
-			List<HashMap<String,String>> dataList = new ArrayList<HashMap<String,String>>();
+			//Log.i("af","done2");
+			//List<HashMap<String,String>> dataList = new ArrayList<HashMap<String,String>>();
 	        DatabaseHandler db = new DatabaseHandler(context);
 	        List<Game> schedule = db.getAllGames();
 	        db.close();
@@ -321,15 +324,8 @@ public class Schedule extends ListFragment {
 	            dataMap.put("logo", gm.getOpponentImage());
 	            dataList.add(dataMap);
 	        }  
-	        
-	        // Keys used in Hashmap
-	        String[] from = { "logo","home_away_result","date_time" };
-	 
-	        // Ids of views in listview_layout
-	        int[] to = { R.id.logo,R.id.home_away_result,R.id.date_time };
-	        adapter = new SimpleAdapter(context, dataList, R.layout.schedule_listview_layout, from, to);
-	        adapter.notifyDataSetChanged();
-		
+
+	        adapter.notifyDataSetChanged();		
 		}
 	}
 }
