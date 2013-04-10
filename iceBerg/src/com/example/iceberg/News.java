@@ -9,8 +9,10 @@ import org.xmlpull.v1.XmlSerializer;
 
 import android.app.ListFragment;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Xml;
 import android.view.LayoutInflater;
@@ -22,19 +24,25 @@ import android.widget.Toast;
 
 public class News extends ListFragment {
 
-	private List<Blog> blogs;
-	private FeedGet feed;
+	private static List<Blog> blogs;
+	//private FeedGet feed;
+	private static List<HashMap<String,String>> dataList = new ArrayList<HashMap<String,String>>();
+	private static SimpleAdapter adapter;
 	
 	public News() {
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		String[] from = { "title","date" };
+    	int[] to = { R.id.title,R.id.date };       
+    	adapter = new SimpleAdapter(getActivity(), dataList, R.layout.news_listview_layout, from, to);
+        setListAdapter(adapter);
+        
 		FeedParser parser = new RssFeedParser("http://www.lincolnstarsblog.com/feeds/posts/default?alt=rss");
-		feed = new FeedGet(getActivity());
-		feed.execute(parser);
+		new FeedGet1(getActivity()).execute(parser);
 		View view =  inflater.inflate(R.layout.news_list_fragment, container, false);
-		loadFeed();
+		//loadFeed();
 		return view;
 	}
 
@@ -44,12 +52,12 @@ public class News extends ListFragment {
 		Intent viewMessage = new Intent(Intent.ACTION_VIEW, Uri.parse(blogs.get(position).getLink().toExternalForm()));
 		this.startActivity(viewMessage);
 	}
-
+/*
 	private void loadFeed(){
-		List<HashMap<String,String>> dataList = new ArrayList<HashMap<String,String>>();
+		
     	try{
 	    	//FeedParser parser = new RssFeedParser("http://www.lincolnstarsblog.com/feeds/posts/default?alt=rss");
-	    	blogs = feed.get();
+	    	//blogs = feed.get();
 	    	//String xml = writeXml();
 	    	//Log.i("Blog",xml);
 	    	for (Blog blg : blogs){
@@ -59,17 +67,52 @@ public class News extends ListFragment {
 	            dataList.add(dataMap);
 	    	}
 
-	    	String[] from = { "title","date" };
-	    	int[] to = { R.id.title,R.id.date };
-	         
-	    	SimpleAdapter adapter = new SimpleAdapter(getActivity(), dataList, R.layout.news_listview_layout, from, to);
-	        setListAdapter(adapter);
+	    	
 
     	} catch (Throwable t){
     		//Log.e("AndroidNews",t.getMessage(),t);
     	}
     }
+    */
     
+	private static class FeedGet1 extends AsyncTask<FeedParser,Void,String>{
+		
+		Context context;
+		private ProgressDialog loadingNews;
+		//List<Blog> blogs;
+		
+		public FeedGet1(Context context){
+			this.context = context;
+			loadingNews = new ProgressDialog(context);
+		}
+		
+		protected void onPreExecute(){
+			this.loadingNews.setMessage("Loading News");
+	        this.loadingNews.show();
+		}
+		
+		@Override
+		protected String doInBackground(FeedParser... parser) {
+			blogs = parser[0].parse();
+			return "done";
+		}
+
+		protected void onPostExecute(String result){
+			loadingNews.dismiss();
+			
+			if(!dataList.isEmpty())
+				dataList.clear();
+			
+			for (Blog blg : blogs){
+	    		HashMap<String, String> dataMap = new HashMap<String,String>();
+	            dataMap.put("title", blg.getTitle());
+	            dataMap.put("date", blg.getDate());
+	            dataList.add(dataMap);
+	    	}
+			adapter.notifyDataSetChanged();
+		}
+	}
+	/*	
 	private String writeXml(){
 		XmlSerializer serializer = Xml.newSerializer();
 		StringWriter writer = new StringWriter();
@@ -99,5 +142,5 @@ public class News extends ListFragment {
 			throw new RuntimeException(e);
 		} 
 	}
-	
+	*/
 }

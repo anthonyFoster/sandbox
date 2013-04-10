@@ -33,12 +33,27 @@ import android.widget.SimpleAdapter;
 
 public class Schedule extends ListFragment {
 	
-	static SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	String scheduleURL = "http://www.lincolnstars.com/leagues/print_schedule.cfm?leagueID=16793&clientID=4806&teamID=343151&mixed=1";
+	private static SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MM/dd hh:mm");
 	
-	static List<HashMap<String,String>> dataList = new ArrayList<HashMap<String,String>>();
-	
-    static SimpleAdapter adapter;
+	private static List<HashMap<String,String>> dataList = new ArrayList<HashMap<String,String>>();
+    private static SimpleAdapter adapter;
+    
+	private enum Month {
+		Jan,
+		Feb,
+		Mar,
+		Apr,
+		May,
+		Jun,
+		Jul,
+		Aug,
+		Sep,
+		Oct,
+		Nov,
+		Dec
+	}
 	
 	public Schedule() {
 	}
@@ -63,7 +78,9 @@ public class Schedule extends ListFragment {
 	        DatabaseHandler db = new DatabaseHandler(getActivity());
 	        List<Game> schedule = db.getAllGames();
 	        db.close();
-	 
+	        
+	        List<HashMap<String,String>> dataListTemp = new ArrayList<HashMap<String,String>>();
+	        
 	        for(Game gm : schedule){
 	            HashMap<String, String> dataMap = new HashMap<String,String>();
 	            Date date = null;
@@ -81,16 +98,17 @@ public class Schedule extends ListFragment {
 					e.printStackTrace();
 				}
 	            dataMap.put("logo", gm.getOpponentImage());
-	            dataList.add(dataMap);
+	            dataListTemp.add(dataMap);
 	        }
+	        dataList = dataListTemp;
 	        adapter.notifyDataSetChanged();
-	        new UpdateScores(getActivity()).execute("http://www.lincolnstars.com/leagues/print_schedule.cfm?leagueID=16793&clientID=4806&teamID=343151&mixed=1");
+	        new UpdateScores1(getActivity()).execute(scheduleURL);
 		}
 		else{
 			//Log.i("af","no database");
 			DatabaseHandler db = new DatabaseHandler(getActivity());
 			db.close();
-			new LoadSchedule1(getActivity()).execute("http://www.lincolnstars.com/leagues/print_schedule.cfm?leagueID=16793&clientID=4806&teamID=343151&mixed=1");
+			new LoadSchedule1(getActivity()).execute(scheduleURL);
 		}
 		
         return view;
@@ -101,25 +119,9 @@ public class Schedule extends ListFragment {
 		DatabaseHandler db = null;
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		HashMap<String, String> imageMap = new HashMap<String, String>();
-		Context context;
-		private ProgressDialog dialog;
+		Context context = null;
+		private ProgressDialog dialog = null;
 	    //private Schedule schedule;
-
-		
-		private enum Month {
-			Jan,
-			Feb,
-			Mar,
-			Apr,
-			May,
-			Jun,
-			Jul,
-			Aug,
-			Sep,
-			Oct,
-			Nov,
-			Dec
-		}
 		
 		public LoadSchedule1(Context context){
 			this.context = context;
@@ -254,13 +256,13 @@ public class Schedule extends ListFragment {
 									else{
 										file = opponent.split("\\s+")[0].replace("\\s","").toLowerCase();
 									}
-									
+
 									schedule.add(new Game(date, opponent, homeAway, finalScore, imageMap.get(file)));
 								}
 								else{
 									schedule.add(new Game(date, opponent, homeAway, finalScore, imageMap.get(opponent.replace("\\s","").toLowerCase())));
 								}
-								
+
 								homeAway = null;
 								score = null;
 								mydate = null;
@@ -281,12 +283,192 @@ public class Schedule extends ListFragment {
 				in.close();
 				
 				for (Game gm : schedule) {
-					//Log.i("list of games", "Datetime: "+gm.getDate() + " , Opp: " + gm.getOpponent()+ " , home: " + gm.getHomeAway()+ " , score: " + gm.getResult()+ " , img: " + gm.getOpponentImage());
+					//Log.i("af", "Datetime: "+gm.getDate() + " , Opp: " + gm.getOpponent()+ " , home: " + gm.getHomeAway()+ " , score: " + gm.getResult()+ " , img: " + gm.getOpponentImage());
 					db.addGame(gm);
-				}
 
+				}
+				//db.close();
 				return "done";
 				
+			}
+			catch(Exception e){
+				Log.i("af",e.toString());
+				db.close();
+				return null;
+			}
+		}
+		
+		protected void onPostExecute(String result){
+			dialog.dismiss();
+			//Log.i("af","done2");
+			//List<HashMap<String,String>> dataList = new ArrayList<HashMap<String,String>>();
+	        //DatabaseHandler db = new DatabaseHandler(context);
+	        List<Game> scheduleToLoad = db.getAllGames();
+	        db.close();
+
+	        List<HashMap<String,String>> dataListTemp = new ArrayList<HashMap<String,String>>();
+	        
+	        for(Game gm : scheduleToLoad){
+	        	//Log.i("af","game: " +gm.getDate());
+	            HashMap<String, String> dataMap = new HashMap<String,String>();
+	            Date date = null;
+	            if(gm.getResult() == null){
+	            	dataMap.put("home_away_result", gm.getHomeAway());
+	            }
+	            else{
+	            	dataMap.put("home_away_result", gm.getResult());
+	            }
+	            try {
+	            	date = FORMATTER.parse(gm.getDate());
+					dataMap.put("date_time", dateFormat.format(date));
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	            dataMap.put("logo", gm.getOpponentImage());
+	            dataListTemp.add(dataMap);
+	        }  
+	        dataList = dataListTemp;
+	        adapter.notifyDataSetChanged();		
+		}
+	}
+	
+	private class UpdateScores1 extends AsyncTask<String,Void,String>{
+
+		DatabaseHandler db = null;
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Context context;
+		
+		public UpdateScores1(Context context){
+			db = new DatabaseHandler(context);
+			this.context = context;
+		}
+
+		protected String doInBackground(String... urls) {
+			URI uri = null;
+			try {
+				uri = new URI(urls[0]);
+			} 
+			catch (URISyntaxException e1) {
+			}
+			HttpClient client = new DefaultHttpClient();
+			HttpGet request = new HttpGet(uri);
+			
+			List<Game> gamesWithNoResults = db.getGamesWithoutResult();
+			Date today = new Date(); //dateFormat.format(new Date());
+			
+			try{
+				HttpResponse response = client.execute(request);
+				InputStream in = response.getEntity().getContent();
+				BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+				String htmlLine = null;
+				String line = null;
+				Game gameToUpdate = null;
+				String mydate = null;
+				String score = null;
+				String finalScore = null;
+				boolean capture = false;
+				int j = 0;
+				boolean dateIsAfterToday = false;
+				
+				while((htmlLine = reader.readLine()) != null && !dateIsAfterToday)
+				{
+					line = android.text.Html.fromHtml(htmlLine).toString();
+					if(capture && !line.equals("")){
+						switch(j){
+							case 0: //date
+								mydate = line.split("\\s+")[1];	
+								int month = Month.valueOf(mydate.split("-")[1]).ordinal() + 1;
+								mydate = "20" + mydate.split("-")[2] + "-" + month + "-" + mydate.split("-")[0];
+								j++;
+								break;
+							case 1: //time
+								if(dateFormat.parse(mydate).before(dateFormat.parse(dateFormat.format(today)))){
+									for(Game gm : gamesWithNoResults){	
+										if(gm.getDate().split("\\s+")[0].equalsIgnoreCase(mydate)){
+											gameToUpdate = gm;
+											capture = true;
+											break;
+										}
+										else{
+											capture = false;
+										}
+									}
+								}
+								else{
+									capture = false;
+									dateIsAfterToday = true;
+								}
+								j++;
+								break;
+							case 2: //away team
+								j++;
+								break;
+							case 3://away team score
+								line = line.replaceAll("\\s", "");
+								if(!line.equals("")){
+									score = line;
+								}
+								j++;
+								break;
+							case 4: //home team
+								j++;
+								break;
+							case 5://home team score
+								line = line.replaceAll("\\s", "");
+								String ot = "";
+								if(score != null){
+									if(line.contains("OT") || score.contains("OT")){
+										line = line.replaceAll("OT", "");
+										score = score.replaceAll("OT", ""); 
+										ot = " OT";
+									}
+									
+									if(Integer.parseInt(score) < Integer.parseInt(line)){
+										if(gameToUpdate.getHomeAway().equals("AWAY")){
+											finalScore = "L " + score + " - " + line + ot;
+										}
+										else{
+											finalScore = "W " + score + " - " + line + ot;
+										}
+									}
+									else{
+										if(gameToUpdate.getHomeAway().equals("AWAY")){
+											finalScore = "W " + score + " - " + line + ot;
+										}
+										else{
+											finalScore = "L " + score + " - " + line + ot;
+										}
+									}
+									gameToUpdate.setResult(finalScore);
+								}
+								else{
+									finalScore = null;
+								}
+								j++;
+								break;
+							case 6:
+								if(gameToUpdate != null){
+									db.updateGame(gameToUpdate);
+								}
+								score = null;
+								mydate = null;
+								gameToUpdate = null;
+								j = 0;
+								capture = false;
+							default:
+								break;
+						}
+					}
+					
+					if(line.equals("EX") || line.equals("RS")){
+						capture = true;
+						j = 0;
+					}
+				}
+				in.close();
+				db.close();
+				return null;			
 			}
 			catch(Exception e){
 				//Log.i("af",e.toString());
@@ -295,16 +477,12 @@ public class Schedule extends ListFragment {
 		}
 		
 		protected void onPostExecute(String result){
-			if (dialog.isShowing()) {
-	            dialog.dismiss();
-	            //Log.i("af","done1");
-	        }
-			//Log.i("af","done2");
-			//List<HashMap<String,String>> dataList = new ArrayList<HashMap<String,String>>();
-	        DatabaseHandler db = new DatabaseHandler(context);
+			DatabaseHandler db = new DatabaseHandler(context);
 	        List<Game> schedule = db.getAllGames();
 	        db.close();
 	 
+	        List<HashMap<String,String>> dataListTemp = new ArrayList<HashMap<String,String>>();
+	        
 	        for(Game gm : schedule){
 	            HashMap<String, String> dataMap = new HashMap<String,String>();
 	            Date date = null;
@@ -322,10 +500,11 @@ public class Schedule extends ListFragment {
 					e.printStackTrace();
 				}
 	            dataMap.put("logo", gm.getOpponentImage());
-	            dataList.add(dataMap);
+	            dataListTemp.add(dataMap);
 	        }  
-
-	        adapter.notifyDataSetChanged();		
+	        
+	        dataList = dataListTemp;
+	        adapter.notifyDataSetChanged();
 		}
 	}
 }
