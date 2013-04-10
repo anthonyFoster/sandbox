@@ -1,11 +1,8 @@
 package com.example.iceberg;
 
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import org.xmlpull.v1.XmlSerializer;
 
 import android.app.ListFragment;
 import android.app.ProgressDialog;
@@ -14,13 +11,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.Toast;
 
 public class News extends ListFragment {
 
@@ -39,7 +34,7 @@ public class News extends ListFragment {
     	adapter = new SimpleAdapter(getActivity(), dataList, R.layout.news_listview_layout, from, to);
         setListAdapter(adapter);
         
-		FeedParser parser = new RssFeedParser("http://www.lincolnstarsblog.com/feeds/posts/default?alt=rss");
+		FeedParser parser = new RssFeedParser(getString(R.string.newsURL));
 		new FeedGet1(getActivity()).execute(parser);
 		View view =  inflater.inflate(R.layout.news_list_fragment, container, false);
 		//loadFeed();

@@ -1,13 +1,10 @@
 package com.example.iceberg;
 
-import java.io.File;
-
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.Menu;
 
 public class Home extends FragmentActivity implements ActionBar.TabListener {

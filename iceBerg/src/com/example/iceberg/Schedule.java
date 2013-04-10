@@ -18,8 +18,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import com.example.iceberg.LoadSchedule.Month;
-
 import android.app.ListFragment;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -102,13 +100,13 @@ public class Schedule extends ListFragment {
 	        }
 	        dataList = dataListTemp;
 	        adapter.notifyDataSetChanged();
-	        new UpdateScores1(getActivity()).execute(scheduleURL);
+	        new UpdateScores1(getActivity()).execute(getString(R.string.scheduleURL));
 		}
 		else{
 			//Log.i("af","no database");
 			DatabaseHandler db = new DatabaseHandler(getActivity());
 			db.close();
-			new LoadSchedule1(getActivity()).execute(scheduleURL);
+			new LoadSchedule1(getActivity()).execute(getString(R.string.scheduleURL));
 		}
 		
         return view;
