@@ -25,6 +25,8 @@ public class Twitter extends ListFragment {
     String[] twitterHandle = new String[11];
     //stores actual tweets
     String[] tweets = new String[11];
+    
+    View header;
     	
 	public Twitter() {
 	}
@@ -34,6 +36,7 @@ public class Twitter extends ListFragment {
 
 		setHasOptionsMenu(true);
 		View view =  inflater.inflate(R.layout.twitter_list_fragment, container, false);
+		//header = inflater.inflate(R.layout.twitter_header, null);
 		getTweets();
         return view;
 	}
@@ -64,9 +67,7 @@ public class Twitter extends ListFragment {
 		result = null;
 		
 		//Log.i("af",""+jArray.length());
-		twitterHandle[0] = "#LincolnStars";
-		tweets[0] = "Use the LincolnStars hash tag to join the conversation!";
-		for(int i=1; i < tweets.length; i++){
+		for(int i=0; i < tweets.length; i++){
 			JSONObject oneObject;
 			try {
 				oneObject = jArray.getJSONObject(i);
@@ -90,12 +91,7 @@ public class Twitter extends ListFragment {
         
         // Keys used in Hashmap
         String[] from = {"twitterHandle","tweets" };
-        
-        // Inflate the layout for this fragment  
-        //LayoutInflater inflater = getActivity().getLayoutInflater();
-        //ViewGroup container = getView().getParent();
-         
-        
+
         // Ids of views in listview_layout
         int[] to = {R.id.twitterHandle,R.id.tweets};
         SimpleAdapter adapter = new SimpleAdapter(getActivity(), dataList, R.layout.twitter_listview_layout, from, to);
