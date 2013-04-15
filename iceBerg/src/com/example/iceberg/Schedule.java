@@ -274,7 +274,7 @@ public class Schedule extends ListFragment {
 						}
 					}
 					
-					if(line.equals("EX") || line.equals("RS")){
+					if(line.equals("EX") || line.equals("RS") || line.equals("PO")){
 						capture = true;
 					}
 				}
@@ -460,7 +460,7 @@ public class Schedule extends ListFragment {
 						}
 					}
 					
-					if(line.equals("EX") || line.equals("RS")){
+					if(line.equals("EX") || line.equals("RS") || line.equals("PO")){
 						capture = true;
 						j = 0;
 					}
