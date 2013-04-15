@@ -290,7 +290,7 @@ public class Schedule extends ListFragment {
 				
 			}
 			catch(Exception e){
-				Log.i("af",e.toString());
+				//Log.i("af",e.toString());
 				db.close();
 				return null;
 			}
@@ -304,7 +304,9 @@ public class Schedule extends ListFragment {
 	        List<Game> scheduleToLoad = db.getAllGames();
 	        db.close();
 
-	        List<HashMap<String,String>> dataListTemp = new ArrayList<HashMap<String,String>>();
+	        if(!dataList.isEmpty()){
+	        	dataList.clear();
+	        }
 	        
 	        for(Game gm : scheduleToLoad){
 	        	//Log.i("af","game: " +gm.getDate());
@@ -324,9 +326,8 @@ public class Schedule extends ListFragment {
 					e.printStackTrace();
 				}
 	            dataMap.put("logo", gm.getOpponentImage());
-	            dataListTemp.add(dataMap);
+	            dataList.add(dataMap);
 	        }  
-	        dataList = dataListTemp;
 	        adapter.notifyDataSetChanged();		
 		}
 	}
@@ -465,21 +466,21 @@ public class Schedule extends ListFragment {
 					}
 				}
 				in.close();
-				db.close();
 				return null;			
 			}
 			catch(Exception e){
 				//Log.i("af",e.toString());
+				db.close();
 				return null;
 			}
 		}
 		
 		protected void onPostExecute(String result){
-			DatabaseHandler db = new DatabaseHandler(context);
 	        List<Game> schedule = db.getAllGames();
 	        db.close();
 	 
-	        List<HashMap<String,String>> dataListTemp = new ArrayList<HashMap<String,String>>();
+	        if(!dataList.isEmpty())
+				dataList.clear();
 	        
 	        for(Game gm : schedule){
 	            HashMap<String, String> dataMap = new HashMap<String,String>();
@@ -498,10 +499,8 @@ public class Schedule extends ListFragment {
 					e.printStackTrace();
 				}
 	            dataMap.put("logo", gm.getOpponentImage());
-	            dataListTemp.add(dataMap);
+	            dataList.add(dataMap);
 	        }  
-	        
-	        dataList = dataListTemp;
 	        adapter.notifyDataSetChanged();
 		}
 	}
