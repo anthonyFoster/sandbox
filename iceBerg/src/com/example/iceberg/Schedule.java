@@ -33,7 +33,7 @@ public class Schedule extends ListFragment {
 	
 	String scheduleURL = "http://www.lincolnstars.com/leagues/print_schedule.cfm?leagueID=16793&clientID=4806&teamID=343151&mixed=1";
 	private static SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-	SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MM/dd hh:mm");
+	private static SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MM/dd hh:mm");
 	
 	private static List<HashMap<String,String>> dataList = new ArrayList<HashMap<String,String>>();
     private static SimpleAdapter adapter;
@@ -77,8 +77,6 @@ public class Schedule extends ListFragment {
 	        List<Game> schedule = db.getAllGames();
 	        db.close();
 	        
-	        List<HashMap<String,String>> dataListTemp = new ArrayList<HashMap<String,String>>();
-	        
 	        for(Game gm : schedule){
 	            HashMap<String, String> dataMap = new HashMap<String,String>();
 	            Date date = null;
@@ -96,9 +94,8 @@ public class Schedule extends ListFragment {
 					e.printStackTrace();
 				}
 	            dataMap.put("logo", gm.getOpponentImage());
-	            dataListTemp.add(dataMap);
+	            dataList.add(dataMap);
 	        }
-	        dataList = dataListTemp;
 	        adapter.notifyDataSetChanged();
 	        new UpdateScores1(getActivity()).execute(getString(R.string.scheduleURL));
 		}
@@ -115,7 +112,6 @@ public class Schedule extends ListFragment {
 	private static class LoadSchedule1 extends AsyncTask<String,Integer,String>{
 
 		DatabaseHandler db = null;
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		HashMap<String, String> imageMap = new HashMap<String, String>();
 		Context context = null;
 		private ProgressDialog dialog = null;
@@ -125,21 +121,21 @@ public class Schedule extends ListFragment {
 			this.context = context;
 			db = new DatabaseHandler(context);
 			dialog = new ProgressDialog(context);
-			imageMap.put("fargo", Integer.toString(R.drawable.fargo));
-			imageMap.put("cedar", Integer.toString(R.drawable.cedar_rapids));
-			imageMap.put("chicago", Integer.toString(R.drawable.chicago));
-			imageMap.put("des", Integer.toString(R.drawable.desmoines));
-			imageMap.put("dubuque", Integer.toString(R.drawable.dubuque));
-			imageMap.put("green", Integer.toString(R.drawable.green_bay));
-			imageMap.put("indiana", Integer.toString(R.drawable.indiana));
-			imageMap.put("muskegon", Integer.toString(R.drawable.muskegon));
-			imageMap.put("omaha", Integer.toString(R.drawable.omaha));
-			imageMap.put("siouxcity", Integer.toString(R.drawable.sioux_city));
-			imageMap.put("siouxfalls", Integer.toString(R.drawable.sioux_falls));
-			imageMap.put("tri-city", Integer.toString(R.drawable.tricity));
-			imageMap.put("usntdp", Integer.toString(R.drawable.usa));
-			imageMap.put("waterloo", Integer.toString(R.drawable.waterloo));
-			imageMap.put("youngstown", Integer.toString(R.drawable.youngstown));
+			imageMap.put("fargo", Integer.toString(R.drawable.force));
+			imageMap.put("cedar", Integer.toString(R.drawable.roughriders));
+			imageMap.put("chicago", Integer.toString(R.drawable.steel));
+			imageMap.put("des", Integer.toString(R.drawable.buccaneers));
+			imageMap.put("dubuque", Integer.toString(R.drawable.fightingsaints));
+			imageMap.put("green", Integer.toString(R.drawable.gamblers));
+			imageMap.put("indiana", Integer.toString(R.drawable.ice));
+			imageMap.put("muskegon", Integer.toString(R.drawable.lumberjacks));
+			imageMap.put("omaha", Integer.toString(R.drawable.lancers));
+			imageMap.put("siouxcity", Integer.toString(R.drawable.musketeers));
+			imageMap.put("siouxfalls", Integer.toString(R.drawable.stampede));
+			imageMap.put("tri-city", Integer.toString(R.drawable.storm));
+			imageMap.put("usntdp", Integer.toString(R.drawable.usa2));
+			imageMap.put("waterloo", Integer.toString(R.drawable.blackhawks));
+			imageMap.put("youngstown", Integer.toString(R.drawable.phantoms));
 		}
 		
 		protected void onPreExecute(){
@@ -335,7 +331,6 @@ public class Schedule extends ListFragment {
 	private class UpdateScores1 extends AsyncTask<String,Void,String>{
 
 		DatabaseHandler db = null;
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Context context;
 		
 		public UpdateScores1(Context context){

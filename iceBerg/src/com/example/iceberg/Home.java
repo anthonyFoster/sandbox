@@ -19,23 +19,6 @@ public class Home extends FragmentActivity implements ActionBar.TabListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
-		
-		//DatabaseHandler db = new DatabaseHandler(this);
-        //db.close();
-		/* I was trying to make it detect if the database file exists so we could possibly
-		  do stuff here if needed. but this wasn't working.
-		File database = getApplicationContext().getDatabasePath("iceberg");
-		 
-
-		if (!database.exists()) {
-		    // Database does not exist so copy it from assets here
-		    Log.i("af", "Not Found");
-		    DatabaseHandler db = new DatabaseHandler(this);
-	        db.close();
-		} else {
-		    Log.i("af", "Found");
-		}
-		*/
 
 		// Set up the action bar to show tabs.
 		final ActionBar actionBar = getActionBar();
