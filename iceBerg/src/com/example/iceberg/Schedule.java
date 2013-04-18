@@ -28,15 +28,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 public class Schedule extends ListFragment {
 	
 	String scheduleURL = "http://www.lincolnstars.com/leagues/print_schedule.cfm?leagueID=16793&clientID=4806&teamID=343151&mixed=1";
-	private static SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-	private static SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MM/dd hh:mm");
-	
-	private static List<HashMap<String,String>> dataList = new ArrayList<HashMap<String,String>>();
-    private static SimpleAdapter adapter;
+	private SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MM/dd hh:mm");
+	private List<HashMap<String,String>> dataList = new ArrayList<HashMap<String,String>>();
+    private SimpleAdapter adapter;
+    private Date today = new Date();
+	private SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy-MM-dd");
+	int gameToSelect = 0;
     
 	private enum Month {
 		Jan,
@@ -65,14 +68,13 @@ public class Schedule extends ListFragment {
 	    
 	    adapter = new SimpleAdapter(getActivity(), dataList, R.layout.schedule_listview_layout, from, to);
 	    setListAdapter(adapter);
+	    gameToSelect = 0;
 	    
 		// Inflate the layout for this fragment  
         View view =  inflater.inflate(R.layout.schedule_list_fragment, container, false); 
 		File dbFile = new File("/data/data/com.example.iceberg/databases/iceBerg");
 	    
 		if(dbFile.exists()){
-			//Log.i("af","database exists");
-			//List<HashMap<String,String>> dataList = new ArrayList<HashMap<String,String>>();
 	        DatabaseHandler db = new DatabaseHandler(getActivity());
 	        List<Game> schedule = db.getAllGames();
 	        db.close();
@@ -89,6 +91,9 @@ public class Schedule extends ListFragment {
 	            try {
 	            	date = FORMATTER.parse(gm.getDate());
 					dataMap.put("date_time", dateFormat.format(date));
+					if(dateFmt.parse(gm.getDate().split("\\s")[0]).before(dateFmt.parse(dateFmt.format(today)))){
+	            		gameToSelect = gameToSelect + 1;
+	            	}
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -96,7 +101,7 @@ public class Schedule extends ListFragment {
 	            dataMap.put("logo", gm.getOpponentImage());
 	            dataList.add(dataMap);
 	        }
-	        adapter.notifyDataSetChanged();
+	        adapter.notifyDataSetChanged();	        
 	        new UpdateScores1(getActivity()).execute(getString(R.string.scheduleURL));
 		}
 		else{
@@ -109,13 +114,18 @@ public class Schedule extends ListFragment {
         return view;
 	}
 	
-	private static class LoadSchedule1 extends AsyncTask<String,Integer,String>{
+	public void onStart(){
+		super.onStart();
+		setSelection(gameToSelect);
+		//
+	}
+	
+	private class LoadSchedule1 extends AsyncTask<String,Integer,String>{
 
 		DatabaseHandler db = null;
 		HashMap<String, String> imageMap = new HashMap<String, String>();
 		Context context = null;
 		private ProgressDialog dialog = null;
-	    //private Schedule schedule;
 		
 		public LoadSchedule1(Context context){
 			this.context = context;
@@ -299,6 +309,7 @@ public class Schedule extends ListFragment {
 	        //DatabaseHandler db = new DatabaseHandler(context);
 	        List<Game> scheduleToLoad = db.getAllGames();
 	        db.close();
+	        gameToSelect = 0;
 
 	        if(!dataList.isEmpty()){
 	        	dataList.clear();
@@ -317,6 +328,9 @@ public class Schedule extends ListFragment {
 	            try {
 	            	date = FORMATTER.parse(gm.getDate());
 					dataMap.put("date_time", dateFormat.format(date));
+					if(dateFmt.parse(gm.getDate().split("\\s")[0]).before(dateFmt.parse(dateFmt.format(today)))){
+	            		gameToSelect = gameToSelect + 1;
+	            	}
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -324,7 +338,8 @@ public class Schedule extends ListFragment {
 	            dataMap.put("logo", gm.getOpponentImage());
 	            dataList.add(dataMap);
 	        }  
-	        adapter.notifyDataSetChanged();		
+	        adapter.notifyDataSetChanged();
+	        setSelection(gameToSelect);
 		}
 	}
 	
@@ -336,6 +351,10 @@ public class Schedule extends ListFragment {
 		public UpdateScores1(Context context){
 			db = new DatabaseHandler(context);
 			this.context = context;
+		}
+		
+		protected void onPreExecute(){
+			Toast.makeText(context,"Updating Scores", Toast.LENGTH_LONG).show();
 		}
 
 		protected String doInBackground(String... urls) {
@@ -349,7 +368,6 @@ public class Schedule extends ListFragment {
 			HttpGet request = new HttpGet(uri);
 			
 			List<Game> gamesWithNoResults = db.getGamesWithoutResult();
-			Date today = new Date(); //dateFormat.format(new Date());
 			
 			try{
 				HttpResponse response = client.execute(request);
@@ -377,7 +395,7 @@ public class Schedule extends ListFragment {
 								j++;
 								break;
 							case 1: //time
-								if(dateFormat.parse(mydate).before(dateFormat.parse(dateFormat.format(today)))){
+								if(dateFmt.parse(mydate).before(dateFmt.parse(dateFmt.format(today)))){
 									for(Game gm : gamesWithNoResults){	
 										if(gm.getDate().split("\\s+")[0].equalsIgnoreCase(mydate)){
 											gameToUpdate = gm;
@@ -473,6 +491,7 @@ public class Schedule extends ListFragment {
 		protected void onPostExecute(String result){
 	        List<Game> schedule = db.getAllGames();
 	        db.close();
+	        gameToSelect = 0;
 	 
 	        if(!dataList.isEmpty())
 				dataList.clear();
@@ -488,7 +507,10 @@ public class Schedule extends ListFragment {
 	            }
 	            try {
 	            	date = FORMATTER.parse(gm.getDate());
-					dataMap.put("date_time", dateFormat.format(date));
+	            	dataMap.put("date_time", dateFormat.format(date));
+	            	if(dateFmt.parse(gm.getDate().split("\\s")[0]).before(dateFmt.parse(dateFmt.format(today)))){
+	            		gameToSelect = gameToSelect + 1;
+	            	}				
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -497,6 +519,7 @@ public class Schedule extends ListFragment {
 	            dataList.add(dataMap);
 	        }  
 	        adapter.notifyDataSetChanged();
+	        setSelection(gameToSelect);
 		}
 	}
 }
