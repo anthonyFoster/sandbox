@@ -31,6 +31,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	private static final String KEY_HOME_AWAY = "home_away";
     private static final String KEY_RESULT = "result";
     private static final String KEY_OPPONENT_IMAGE = "opponent_image";
+    private static final String KEY_GAME_TYPE = "game_type";		//used to identify exhib('E'), regular('R'), and playoff ('P')
+    private static final String KEY_MONTH_ROUND = "month_round";	//used to identify month or round of playoff (numerically)
     
     SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MM/dd hh:mm");
     Context context;
@@ -45,10 +47,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	//Log.i("af", "Creating db");
         String CREATE_SCHEDULE_TABLE = "CREATE TABLE " + TABLE_SCHEDULE + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_DATE + " TEXT,"
-                + KEY_OPPONENT + " TEXT," + KEY_HOME_AWAY + " TEXT," + KEY_RESULT + " TEXT," + KEY_OPPONENT_IMAGE + " TEXT" + ")";
+                + KEY_OPPONENT + " TEXT," + KEY_HOME_AWAY + " TEXT," + KEY_RESULT + " TEXT," 
+                + KEY_OPPONENT_IMAGE + " TEXT," + KEY_GAME_TYPE + " TEXT," + KEY_MONTH_ROUND + " INTEGER" + ")";
         db.execSQL(CREATE_SCHEDULE_TABLE);
-        
-		//new LoadSchedule(context).execute("http://www.lincolnstars.com/leagues/print_schedule.cfm?leagueID=16793&clientID=4806&teamID=343151&mixed=1");
     }
  
     // Upgrading database
@@ -71,6 +72,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		values.put(KEY_HOME_AWAY, game.getHomeAway()); // home away
         values.put(KEY_RESULT, game.getResult()); // result
 		values.put(KEY_OPPONENT_IMAGE, game.getOpponentImage()); // opponent image
+		values.put(KEY_GAME_TYPE, game.getGameType()); // result
+		values.put(KEY_MONTH_ROUND, game.getMonthRoundAsInt()); // opponent image
+		
  
         // Inserting Row
         db.insert(TABLE_SCHEDULE, null, values);
@@ -90,7 +94,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         
         String date = null;
 		//date = dateFormat.format(cursor.getString(1));
-        Game game = new Game(Integer.parseInt(cursor.getString(0)), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5));
+        Game game = new Game(Integer.parseInt(cursor.getString(0)), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), Integer.parseInt(cursor.getString(7)));
 		
 		db.close();
         // return game
@@ -116,6 +120,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				game.setHomeAway(cursor.getString(3));
 				game.setResult(cursor.getString(4));
 				game.setOpponentImage(cursor.getString(5));
+				game.setGameType(cursor.getString(6));
+				game.setMonthRound(Integer.parseInt(cursor.getString(7)));
                 // Adding game to list
 				gameList.add(game);
             } while (cursor.moveToNext());
@@ -147,6 +153,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 						game.setHomeAway(cursor.getString(3));
 						game.setResult(cursor.getString(4));
 						game.setOpponentImage(cursor.getString(5));
+						game.setGameType(cursor.getString(6));
+						game.setMonthRound(Integer.parseInt(cursor.getString(7)));
 					    // Adding game to list
 						gameList.add(game);
 					}
@@ -174,6 +182,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		values.put(KEY_HOME_AWAY, game.getHomeAway()); // home away
         values.put(KEY_RESULT, game.getResult()); // result
 		values.put(KEY_OPPONENT_IMAGE, game.getOpponentImage()); // opponent image
+		values.put(KEY_GAME_TYPE, game.getGameType());
+		values.put(KEY_MONTH_ROUND, game.getMonthRoundAsInt());
 		int rtn = db.update(TABLE_SCHEDULE, values, KEY_ID + " = ?", new String[] { String.valueOf(game.getID()) });
 		db.close();
         // updating row

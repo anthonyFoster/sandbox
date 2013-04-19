@@ -32,7 +32,7 @@ import android.widget.Toast;
 
 public class Schedule extends ListFragment {
 	
-	String scheduleURL = "http://www.lincolnstars.com/leagues/print_schedule.cfm?leagueID=16793&clientID=4806&teamID=343151&mixed=1";
+	//String scheduleURL = "http://www.lincolnstars.com/leagues/print_schedule.cfm?leagueID=16793&clientID=4806&teamID=343151&mixed=1";
 	private SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MM/dd hh:mm");
 	private List<HashMap<String,String>> dataList = new ArrayList<HashMap<String,String>>();
@@ -102,13 +102,13 @@ public class Schedule extends ListFragment {
 	            dataList.add(dataMap);
 	        }
 	        adapter.notifyDataSetChanged();	        
-	        new UpdateScores1(getActivity()).execute(getString(R.string.scheduleURL));
+	        new UpdateScores(getActivity()).execute(getString(R.string.scheduleURL));
 		}
 		else{
 			//Log.i("af","no database");
 			DatabaseHandler db = new DatabaseHandler(getActivity());
 			db.close();
-			new LoadSchedule1(getActivity()).execute(getString(R.string.scheduleURL));
+			new LoadSchedule(getActivity()).execute(getString(R.string.scheduleURL));
 		}
 		
         return view;
@@ -117,17 +117,16 @@ public class Schedule extends ListFragment {
 	public void onStart(){
 		super.onStart();
 		setSelection(gameToSelect);
-		//
 	}
 	
-	private class LoadSchedule1 extends AsyncTask<String,Integer,String>{
+	private class LoadSchedule extends AsyncTask<String,Integer,String>{
 
 		DatabaseHandler db = null;
 		HashMap<String, String> imageMap = new HashMap<String, String>();
 		Context context = null;
 		private ProgressDialog dialog = null;
 		
-		public LoadSchedule1(Context context){
+		public LoadSchedule(Context context){
 			this.context = context;
 			db = new DatabaseHandler(context);
 			dialog = new ProgressDialog(context);
@@ -177,6 +176,9 @@ public class Schedule extends ListFragment {
 				String score = null;
 				String finalScore = null;
 				String opponent = null;
+				String gameType = null;
+				int currentRoundNumber = 1;
+				int gameCount = 1;
 				boolean capture = false;
 				int j = 0;
 				
@@ -260,11 +262,17 @@ public class Schedule extends ListFragment {
 									else{
 										file = opponent.split("\\s+")[0].replace("\\s","").toLowerCase();
 									}
-
-									schedule.add(new Game(date, opponent, homeAway, finalScore, imageMap.get(file)));
+									
+									if(gameType.equalsIgnoreCase("P"))
+										schedule.add(new Game(date, opponent, homeAway, finalScore, imageMap.get(file), gameType, currentRoundNumber));
+									else
+										schedule.add(new Game(date, opponent, homeAway, finalScore, imageMap.get(file), gameType));
 								}
 								else{
-									schedule.add(new Game(date, opponent, homeAway, finalScore, imageMap.get(opponent.replace("\\s","").toLowerCase())));
+									if(gameType.equalsIgnoreCase("P"))
+										schedule.add(new Game(date, opponent, homeAway, finalScore, imageMap.get(opponent.replace("\\s","").toLowerCase()), gameType, currentRoundNumber));
+									else
+										schedule.add(new Game(date, opponent, homeAway, finalScore, imageMap.get(opponent.replace("\\s","").toLowerCase()), gameType));
 								}
 
 								homeAway = null;
@@ -274,6 +282,7 @@ public class Schedule extends ListFragment {
 								opponent = null;
 								j = 0;
 								capture = false;
+								gameType = null;
 								//Log.i("af","going");
 							default:
 								break;
@@ -282,18 +291,23 @@ public class Schedule extends ListFragment {
 					
 					if(line.equals("EX") || line.equals("RS") || line.equals("PO")){
 						capture = true;
+						gameType = String.valueOf(line.charAt(0));
+						if(line.equals("PO") && gameCount > 5){
+							currentRoundNumber = currentRoundNumber + 1;
+							gameCount = 1;
+						}
+						else if(line.equals("PO") && gameCount <= 5){
+							gameCount = gameCount + 1;
+						}
 					}
 				}
 				in.close();
 				
 				for (Game gm : schedule) {
-					//Log.i("af", "Datetime: "+gm.getDate() + " , Opp: " + gm.getOpponent()+ " , home: " + gm.getHomeAway()+ " , score: " + gm.getResult()+ " , img: " + gm.getOpponentImage());
 					db.addGame(gm);
-
 				}
-				//db.close();
+
 				return "done";
-				
 			}
 			catch(Exception e){
 				//Log.i("af",e.toString());
@@ -304,9 +318,6 @@ public class Schedule extends ListFragment {
 		
 		protected void onPostExecute(String result){
 			dialog.dismiss();
-			//Log.i("af","done2");
-			//List<HashMap<String,String>> dataList = new ArrayList<HashMap<String,String>>();
-	        //DatabaseHandler db = new DatabaseHandler(context);
 	        List<Game> scheduleToLoad = db.getAllGames();
 	        db.close();
 	        gameToSelect = 0;
@@ -316,7 +327,6 @@ public class Schedule extends ListFragment {
 	        }
 	        
 	        for(Game gm : scheduleToLoad){
-	        	//Log.i("af","game: " +gm.getDate());
 	            HashMap<String, String> dataMap = new HashMap<String,String>();
 	            Date date = null;
 	            if(gm.getResult() == null){
@@ -343,12 +353,12 @@ public class Schedule extends ListFragment {
 		}
 	}
 	
-	private class UpdateScores1 extends AsyncTask<String,Void,String>{
+	private class UpdateScores extends AsyncTask<String,Void,String>{
 
 		DatabaseHandler db = null;
 		Context context;
 		
-		public UpdateScores1(Context context){
+		public UpdateScores(Context context){
 			db = new DatabaseHandler(context);
 			this.context = context;
 		}
