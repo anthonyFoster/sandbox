@@ -7,7 +7,7 @@
     <string name="title_schedule">Schedule</string>
     <string name="menu_settings">Settings</string>
     <string name="logos">Logos</string>
-    <string name="scheduleURL">http://www.lincolnstars.com/leagues/print_schedule.cfm?leagueID=16793&amp;clientID=4806&amp;teamID=343151&amp;mixed=1</string>
+    <string name="scheduleURL">http://www.lincolnstars.com/leagues/print_schedule.cfm?leagueID=16793&amp;clientID=4806&amp;teamID=379068&amp;mixed=1</string>
 	<string name="newsURL">http://www.lincolnstarsblog.com/feeds/posts/default?alt=rss</string>
 	<string name="twitterHeaderText">Use #LincolnStars to join the converstation!</string>
 	
